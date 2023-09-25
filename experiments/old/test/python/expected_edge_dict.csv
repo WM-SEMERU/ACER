@@ -1,0 +1,5 @@
+caller_index,callee_index,call_type
+4,0,invokevirtual 
+5,0,invokevirtual
+6,1,invokevirtual 
+7,2,invokevirtual

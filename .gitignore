@@ -1,0 +1,24 @@
+
+*.pyc
+
+# after build, my-languages.so is generated, but that should only come from build
+*.so 
+vendor/
+
+# Actually allow for .vscode/settings.json for python testing config file to be shared
+.vscode 
+!.vscode/settings.json
+
+# Don't upload output results
+output/*
+
+# vscode's latex plugin produces many junk files that start with `paper.`, ignore those.
+# But, include paper.pdf and paper.tex, of course.
+paper.*
+!paper.pdf
+!paper.tex
+
+# Compiled java
+*.class
+# large testing repo
+evaluations/jdk7 

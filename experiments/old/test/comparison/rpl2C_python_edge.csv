@@ -1,0 +1,6 @@
+,called,callee,line,type,
+0,13,0,16,InvokeVirtual,
+1,7,0,20,InvokeVirtual,
+2,14,13,197,InvokeStatic,
+3,14,13,203,InvokeStatic,
+4,14,13,209,InvokeStatic,

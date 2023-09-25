@@ -1,0 +1,21 @@
+,method
+0,"def methodA():
+        print(""A Method A"")
+        b = B()
+        b.methodD()"
+1,"def methodB(cls):
+        b = B()
+        b.methodE()"
+2,"def methodC(self):
+        b = B()
+        b.methodE()
+        self.methodA()"
+3,"def methodD(self):
+        aclass = A()
+        A.methodA()
+        aclass.methodA()
+        print(""B Method A"")"
+4,"def methodE(self):
+        aclass = A()
+        aclass.methodC()
+        self.methodD()"

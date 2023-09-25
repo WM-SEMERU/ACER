@@ -1,0 +1,5 @@
+void method(String a, Integer b, Float c) {
+	a; 
+	b; 
+	c;
+}

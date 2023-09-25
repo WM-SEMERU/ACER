@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://d3js.org/d3.v5.min.js"></script>
+		<style>
+			.node {
+				background-color: red;
+				border: 1px solid black;
+				border-radius: 50%;
+				position: absolute;
+				text-align: center;
+			}
+			.link {
+				stroke: black;
+				position: absolute;
+			}
+
+			.links {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+			}
+
+			.nodes {
+				position: absolute;
+				left: 0;
+				top: 0;
+				border: 1px solid black;
+				width: 100%;
+			}
+
+			div#visualization {
+				margin: 0 auto;
+				margin-top: 10px;
+			}
+
+			html {
+				user-select: none;
+				text-align: center;
+			}
+		</style>
+		<title>Callgraph Visualizer</title>
+	</head>
+	<body>
+		<h1>Callgraph Visualizer</h1>
+		<input type="file" id="csvFileInput" accept=".csv" />
+		<button id="toggle">Toggle method names</button>
+		<div id="visualization"></div>
+		<script>
+			const width = 800, // visualizer window size
+				height = 600,
+				nodeDiameter = 10,
+				forceStrength = -2; // -2 is a pretty damn low number!
+
+			var links, nodes; // the d3 objects that corresponds to the links and nodes in our visualization.
+			var linksData, nodesData; // the data used by the d3 objects — links, nodes
+
+			// One time setup. Configure container sizes, attach events, and add dummy sample data.
+			function setup() {
+				/* BEGIN: Setup dynamic styles */
+				d3.select("div#visualization")
+					.style("width", `${width}px`)
+					.style("height", `${height}px`)
+					.style("position", "relative");
+
+				d3.select("#visualization")
+					.append("svg")
+					.attr("id", "linksContainer")
+					.style("width", `${width}px`)
+					.style("height", `${height}px`)
+					.attr("class", "links");
+
+				d3.select("#visualization")
+					.append("div")
+					.attr("id", "nodesContainer")
+					.style("width", `${width}px`)
+					.style("height", `${height}px`)
+					.attr("class", "nodes");
+				/* END: Setup dynamic styles */
+
+				/* BEGIN: Attach events */
+				var csvFileInput = document.getElementById("csvFileInput");
+				csvFileInput.addEventListener("change", function () {
+					// use the FileReader API to read the selected file
+					var fileReader = new FileReader();
+					fileReader.readAsText(csvFileInput.files[0]);
+					fileReader.onload = function (e) {
+						const edges = d3.csvParse(e.target.result, (d) => [
+							d.caller,
+							d.callee,
+						]);
+						const nodes = Array.from([
+							...new Set(edges.map((d) => d[0])),
+							...new Set(edges.map((d) => d[1])),
+						]);
+
+						const d3_nodes = nodes.map((n) => ({
+							id: n,
+						}));
+						const d3_links = edges.map((d) => {
+							return { source: d[0], target: d[1], value: 10 };
+						});
+
+						nodesData = d3_nodes;
+						linksData = d3_links;
+
+						update();
+					};
+				});
+
+				d3.select("#toggle").on("click", () => nodes.dispatch("click"));
+				/* END: Attach events */
+
+				// Add dummy sample data
+				nodesData = [
+					{ id: "sample data 1" },
+					{ id: "sample data 2" },
+					{ id: "sample data 3" },
+				];
+				linksData = [{ source: "sample data 1", target: "sample data 3" }];
+			}
+
+			// update dots to the new values of links and nodes; restarts simulation
+			function update() {
+				// set up the force simulation and add forces
+				var simulation = d3
+					.forceSimulation(nodesData)
+					.force(
+						"link",
+						d3.forceLink(linksData).id(function (d) {
+							return d.id;
+						})
+					)
+					.force("charge", d3.forceManyBody().strength(-2))
+					.force("center", d3.forceCenter(width / 2, height / 2));
+
+				// draw links
+				links = d3
+					.select("#linksContainer")
+					.selectAll("line")
+					.data(linksData)
+					.join("line")
+					.attr("class", "link")
+					.attr("stroke-width", function (d) {
+						return Math.sqrt(d.value);
+					});
+
+				// draw nodes
+				nodes = d3
+					.select("#nodesContainer")
+					.selectAll("div")
+					.data(nodesData)
+					.join("div")
+					.attr("class", "node")
+					.style("width", `${nodeDiameter}px`)
+					.style("height", `${nodeDiameter}px`)
+					.on("click", function (d) {
+						// toggle the underlying method name of the node!
+						d.selected = !d.selected;
+
+						if (d.selected) {
+							d3.select(this)
+								.append("a")
+								.style("opacity", (d) => (d.selected ? 1 : 0))
+								.text((d) => d.id);
+						} else {
+							d3.select(this).select("a").remove();
+						}
+					});
+
+				simulation.on("tick", ticked);
+				simulation.alphaTarget(0.3).restart();
+
+				// nodes are now draggable
+				nodes.call(drag(simulation));
+
+				// what and how to update the elements on each simulation tick
+				function ticked() {
+					function bound(val, left, right) {
+						if (val < left) return left;
+						if (val > right) return right;
+						return val;
+					}
+
+					links
+						.attr("x1", function (d) {
+							return d.source.x + nodeDiameter / 2;
+						})
+						.attr("y1", function (d) {
+							return d.source.y + nodeDiameter / 2;
+						})
+						.attr("x2", function (d) {
+							return d.target.x + nodeDiameter / 2;
+						})
+						.attr("y2", function (d) {
+							return d.target.y + nodeDiameter / 2;
+						});
+
+					nodes
+						.style("left", function (d) {
+							return bound(d.x, 0, width - nodeDiameter) + "px";
+						})
+						.style("top", function (d) {
+							return bound(d.y, 0, height - nodeDiameter) + "px";
+						});
+				}
+
+				// attach to nodes to make them draggable
+				function drag(simulation) {
+					return d3
+						.drag()
+						.on("start", (d) => {
+							if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+							d.fx = d.x;
+							d.fy = d.y;
+						})
+						.on("drag", (d) => {
+							d.fx = d3.event.x;
+							d.fy = d3.event.y;
+						})
+						.on("end", (d) => {
+							if (!d3.event.active) simulation.alphaTarget(0);
+							d.fx = null;
+							d.fy = null;
+						});
+				}
+			}
+
+			setup();
+			update();
+		</script>
+	</body>
+</html>

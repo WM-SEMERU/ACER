@@ -1,0 +1,5 @@
+reholder/guava-retrying:
+- excludes the /test folder, which contains JUnit tests on the /main folder files (which were documented)
+
+flavioarfaria/KenBurnsView:
+- excludes the /sample folder, which contains a sample Android app used to show the /library folder files (which were documented)

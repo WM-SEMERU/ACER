@@ -1,0 +1,33 @@
+,called,callee,call line,type
+0,5,5,118,invokestatic
+1,10,11,196,invokestatic
+2,9,11,201,invokestatic
+3,2,13,259,class call
+4,1,13,263,class call
+5,11,14,276,invokestatic
+6,13,14,287,invokestatic
+7,16,17,348,invokestatic
+8,2,18,365,class call
+9,1,18,369,class call
+10,2,19,394,class call
+11,14,20,423,invokestatic
+12,14,20,424,invokestatic
+13,14,20,425,invokestatic
+14,14,21,445,invokestatic
+15,4,22,460,class call
+16,14,22,465,invokestatic
+17,14,23,483,invokestatic
+18,15,23,484,invokestatic
+19,14,23,485,invokestatic
+20,14,23,489,invokestatic
+21,0,24,495,class call
+22,14,24,503,invokestatic
+23,3,25,521,invokestatic
+24,14,26,527,invokestatic
+25,24,26,528,invokestatic
+26,15,26,532,invokestatic
+27,14,26,533,invokestatic
+28,14,27,552,invokestatic
+29,17,27,553,invokestatic
+30,14,27,554,invokestatic
+31,20,28,569,invokestatic

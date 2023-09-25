@@ -1,0 +1,2 @@
+# Old Source
+Before we developed `ACER`, we set out to just build two Generators, one Python and one Java. This folder contains those efforts. Note that the algorithm attempted here is `CHA`, and the source is thus a lot denser than the `NR`, `SCHA` examples in `examples/`.

@@ -1,0 +1,2 @@
+caller_index,callee_index,call_type
+0,1,invokespecial
