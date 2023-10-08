@@ -2,7 +2,7 @@
 
 
 ### Prerequisite
-- We recommend `python >= 3.8.10`.
+- We recommend `python >= 3.10.x`.
 - Invoke `init_tree_sitter` (it's in the root folder): `python init_tree_sitter.py`. This should create the `build/` folder and the tree-sitter grammar file at `build/my-languages.so`. The `.so` can in fact contain multiple languages. Currently, the `init_tree_sitter` builds `Python`, `Java`, and `cpp` into the `.so`. If you wish to write generators of other languages, you will need to modify the script.
 
 
